@@ -14,8 +14,16 @@ using namespace std;
 
 vector<int> spf(1e7 + 1, 0);
 vector<int> p;
+vector<int> isPrime(1e7 + 1 , 0);
 vector<int> dy(1e7 + 1, 1);
 vector<int> ans(1e7 + 1, 1e7 + 5);
+int gcd(int a, int b) {
+    while(a % b) {
+        int t = a % b;
+        a = b; b = t;
+    }
+    return b;
+}
 int main() {
     cin.tie(NULL);
     cout.tie(NULL);
@@ -32,16 +40,23 @@ int main() {
             if(i % p[j] == 0) break;
         }
     }
+    
+    for(auto val: p) {
+        isPrime[val] = true;
+    }
+
+    
+
     dy[1] = 1;
     for(int i=2; i<=1e7; i++) {
-        if(i == spf[i]) {
-            dy[i] = dy[i/spf[i]] + i;
+        if(isPrime[i]) {
+            dy[i] = i + 1;
         }
-        else if( i/spf[i] == spf[i]) {
-            dy[i] = dy[i/spf[i]] + i;
+        else {
+            dy[i] = i + spf[i] + dy[i/spf[i]] - dy[gcd(i/spf[i], spf[i])] + 1;
         }
-        else dy[i] = dy[i/spf[
     }
+
     for(int i=1; i<=1e7; i++) {
         if(dy[i] <= 1e7) {
             ans[dy[i]] = min(i, ans[dy[i]]);
